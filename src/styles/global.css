@@ -23,21 +23,12 @@
   font-size: 1.2rem;
 }
 
-/* --- Стили для карточек со схемами (по 2 в ряд) --- */
-.flex-wrap {
-  display: flex;
-  flex-wrap: wrap; /* Позволяет элементам переноситься на новую строку */
-  justify-content: center;
-  gap: 1.5rem; /* Увеличенный зазор между схемами */
-  margin-top: 2rem;
-}
+/* --- СТИЛИ ДЛЯ СХЕМ АППЛИКАТУР (ChordCard) - НОВЫЙ ПОДХОД --- */
 
-/* --- СТИЛИ ДЛЯ СХЕМ АППЛИКАТУР (ChordCard) --- */
-
-/* 1. Базовый стиль карточки (без изменений) */
+/* 1. Базовый стиль карточки (если еще нет) */
 .chord-diagram-wrapper {
   display: block;
-  text-align: center;
+  text-align: center; /* Важно! Центрируем инлайн-элементы внутри */
   background-color: white;
   border: 3px solid #4a5568;
   border-radius: 0.75rem;
@@ -45,63 +36,83 @@
   margin: 0.5rem;
 }
 
-/* 2. Обертка для сетки - ГЛАВНЫЕ ИЗМЕНЕНИЯ */
+/* 2. НОВОЕ ПРАВИЛО: Центрирование заголовка как блока */
+.chord-diagram-wrapper > h4 {
+  margin: 0 auto; /* Центрирует блочный элемент по горизонтали */
+  width: fit-content; /* Чтобы margin:auto сработал */
+}
+
+/* 1. Главный контейнер сетки */
 .diagram-grid-wrapper {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   
-  /* УВЕЛИЧИВАЕМ вертикальный отступ между рядами */
-  gap: 8px 8px; /* gap по вертикали и горизонтали */
+  /* РЕШЕНИЕ ПРОБЛЕМЫ 1: Увеличиваем вертикальный отступ между рядами */
+  gap: 8px 4px; /* Меньше зазор по горизонтали для компактности */
   
-  /* НОВОЕ: Задаем фиксированную высоту, равную высоте карточки минус отступы */
-  height: calc(100% - 32px); /* 16px (верхний padding) + 16px (нижний padding) */
-
-  /* НОВОЕ: Центрируем содержимое сетки по вертикали и горизонтали */
-  justify-content: center;
-  align-content: center;
-
+  /* НОВОЕ: Задаем рамку вокруг всей схемы */
+  border: 1px solid rgba(0, 0, 0, 0.1); /* Едва заметная серая рамка */
+  padding: 8px; /* Внутренний отступ от рамки до ячеек */
+  border-radius: 4px; /* Скругленные уголки для красоты */
+  
   width: 100%;
   max-width: 220px;
-  margin: 0 auto; /* Центрируем сетку по горизонтали */
+  margin: 0 auto; /* Центрируем схему внутри карточки */
 }
 
-/* Стили для ячеек (без изменений) */
-.diagram-grid-cell {
+/* 2. Контейнер для одной струны (опционально, но полезно) */
+.diagram-string-row {
+  /* Эта обертка гарантирует, что все ячейки одной струны связаны */
+  display: contents; /* Хитрый трюк: заставляет грид игнорировать этот div */
+}
+
+/* 3. Ячейка одного лада */
+.diagram-fret-cell {
+  /* Каждая ячейка занимает ровно один столбец и одну строку */
   grid-column: span 1;
-  height: 45px; /* Высота самих ячеек */
+  
+  height: 45px; /* Фиксированная высота для ровности */
   position: relative;
   text-align: center;
+  line-height: 45px; /* Простой способ вертикального центрирования */
+  box-sizing: border-box; /* Чтобы padding не ломал размеры */
 }
 
-/* Стили для цифр и дефисов (без изменений) */
-.diagram-grid-cell::before {
+/* Стили для цифр */
+.diagram-fret-cell::before {
   content: attr(data-char);
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   color: #333;
+  font-size: 1.2rem;
 }
-.diagram-grid-cell span {
-  display: none;
-}
-
-/* Единообразие стилей для названий аккордов */
-.card-base h4,
-.output-display h2 {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
-  margin-bottom: 1rem;
+.diagram-fret-cell span {
+  display: none; /* Если используете ::before, span можно скрыть */
 }
 
-/* Сама таблица схемы */
-.chord-diagram-table {
-  border-collapse: collapse; /* Убираем двойные рамки */
-  font-size: 1.2rem; /* Размер цифр на схеме */
-}
-
-/* Стили для ячеек таблицы */
-.chord-diagram-table {
-  border-collapse: collapse;
-  width: fit-content;
+/*
+ * АДАПТАЦИЯ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ
+ *
+ * Медиазапрос 'max-width: 768px' срабатывает,
+ * когда ширина экрана становится меньше или равна 768 пикселям.
+ * Это стандартная точка перехода для планшетов и телефонов.
+ */
+ @media screen and (max-width: 992px) {
+  .grid-cols-4 {
+      grid-template-columns: repeat(3, 1fr); /* Для планшетов - 3 колонки */
   }
+}
+
+@media screen and (max-width: 768px) {
+  .grid-cols-4 {
+      grid-template-columns: repeat(2, 1fr); /* Для телефонов - 2 колонки */
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .grid-cols-4 {
+      grid-template-columns: 1fr; /* Для очень маленьких экранов - 1 колонка */
+  }
+}

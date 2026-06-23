@@ -7,7 +7,7 @@ function SettingsPanel({ onChange }) {
   return (
     <div>
       {/* Заголовок */}
-      <h3 className="text-lg font-semibold mb-4">Режим генерации</h3>
+      <h3 className="text-lg font-semibold mb-4">Генерация последовательности аккордов</h3>
 
     </div>
   );

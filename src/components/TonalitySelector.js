@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+/* eslint-enable react/prop-types */
 // src/components/TonalitySelector.jsx
 
 import React from 'react';

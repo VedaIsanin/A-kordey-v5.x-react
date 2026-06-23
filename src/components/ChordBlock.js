@@ -25,7 +25,7 @@ const ChordBlock = ({ sequence }) => {
         <h3 className="text-xl font-semibold mb-4 text-center">Схемы аппликатур:</h3>
         
         {/* НОВОЕ: Добавляем обертку с классом flex */}
-        <div className="flex flex-wrap justify-center gap-4">
+        <div className="flex flex-wrap justify-center gap-4" class="grid-cols-4">
             {sequence.map((chord, index) => (
                 <ChordCard key={index} chordName={chord} />
             ))}
