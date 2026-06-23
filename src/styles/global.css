@@ -1,0 +1,107 @@
+/* --- Стили для блока с аккордами (по 4 в ряд) --- */
+.output-display {
+  border: 1px solid #ccc; /* Рамка вокруг всего блока */
+  border-radius: 8px;
+  padding: 2rem;
+}
+
+/* Создаем сетку из 4 колонок с отступами между элементами */
+.grid-cols-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem; /* Отступы между аккордами */
+}
+
+.chord-box {
+  display: inline-block;
+  border: 1px solid #aaa; /* Индивидуальная рамка для каждого аккорда */
+  border-radius: 6px;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  min-width: 80px;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+/* --- Стили для карточек со схемами (по 2 в ряд) --- */
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap; /* Позволяет элементам переноситься на новую строку */
+  justify-content: center;
+  gap: 1.5rem; /* Увеличенный зазор между схемами */
+  margin-top: 2rem;
+}
+
+/* --- СТИЛИ ДЛЯ СХЕМ АППЛИКАТУР (ChordCard) --- */
+
+/* 1. Базовый стиль карточки (без изменений) */
+.chord-diagram-wrapper {
+  display: block;
+  text-align: center;
+  background-color: white;
+  border: 3px solid #4a5568;
+  border-radius: 0.75rem;
+  padding: 16px;
+  margin: 0.5rem;
+}
+
+/* 2. Обертка для сетки - ГЛАВНЫЕ ИЗМЕНЕНИЯ */
+.diagram-grid-wrapper {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  
+  /* УВЕЛИЧИВАЕМ вертикальный отступ между рядами */
+  gap: 8px 8px; /* gap по вертикали и горизонтали */
+  
+  /* НОВОЕ: Задаем фиксированную высоту, равную высоте карточки минус отступы */
+  height: calc(100% - 32px); /* 16px (верхний padding) + 16px (нижний padding) */
+
+  /* НОВОЕ: Центрируем содержимое сетки по вертикали и горизонтали */
+  justify-content: center;
+  align-content: center;
+
+  width: 100%;
+  max-width: 220px;
+  margin: 0 auto; /* Центрируем сетку по горизонтали */
+}
+
+/* Стили для ячеек (без изменений) */
+.diagram-grid-cell {
+  grid-column: span 1;
+  height: 45px; /* Высота самих ячеек */
+  position: relative;
+  text-align: center;
+}
+
+/* Стили для цифр и дефисов (без изменений) */
+.diagram-grid-cell::before {
+  content: attr(data-char);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #333;
+}
+.diagram-grid-cell span {
+  display: none;
+}
+
+/* Единообразие стилей для названий аккордов */
+.card-base h4,
+.output-display h2 {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+/* Сама таблица схемы */
+.chord-diagram-table {
+  border-collapse: collapse; /* Убираем двойные рамки */
+  font-size: 1.2rem; /* Размер цифр на схеме */
+}
+
+/* Стили для ячеек таблицы */
+.chord-diagram-table {
+  border-collapse: collapse;
+  width: fit-content;
+  }

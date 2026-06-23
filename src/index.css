@@ -1,0 +1,123 @@
+/* src/index.css */
+
+/* --- СТИЛИ ДЛЯ БЛОКА С АККОРДАМИ (последовательность) --- */
+.chord-names {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+/* Название аккорда */
+.chord-name {
+  text-align: center;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin: 0 0 10px 0; /* Отступ снизу от заголовка */
+  color: #13040c; /* Бирюзовый цвет для названия */
+}
+
+/* --- СТИЛИ ДЛЯ ПОСЛЕДОВАТЕЛЬНОСТИ АККОРДОВ --- */
+.chord-box {
+  display: inline-grid;
+  place-items: center;
+  padding: 0.5rem; /* Уменьшаем внутренний отступ */
+  margin: 0.25rem; /* Уменьшаем внешний отступ */
+  border: 2px solid #4a5568; /* Делаем рамку тоньше */
+  border-radius: 0.75rem;
+  background-color: #2d3748;
+  font-size: 1.25rem; /* Уменьшаем размер текста */
+  font-weight: bold;
+  min-width: 60px; /* Задаем минимальный размер, чтобы блоки не сжимались */
+  height: 60px;
+}
+
+/* --- СТИЛИ ДЛЯ СХЕМ АППЛИКАТУР (ChordCard) --- */
+.chord-diagram-wrapper {
+  display: inline-block;
+  border: 2px solid #4a5568; /* Рамка как у аккордов последовательности */
+  border-radius: 0.75rem; /* Делаем углы рамки скругленными, как у .chord-box */
+  padding: 12px;
+  background-color: #2d3748;
+  text-align: center; /* Центрируем содержимое внутри рамки */
+}
+
+.chord-diagram-table {
+  border-collapse: collapse;
+  font-size: 1.25rem; /* Унифицируем размер текста на схеме */
+}
+
+.chord-diagram-table td {
+  padding: 0;
+}
+
+.chord-diagram-table td span {
+  color: white;
+}
+.chord-diagram-table td {
+  color: #a0aec0;
+}
+
+/* --- СТИЛИ ДЛЯ КАРТОЧЕК С АККОРДАМИ (ChordCard) --- */
+.chord-card {
+  /* Привязка к левому краю, фиксированная ширина */
+  width: fit-content; /* Ширина по содержимому */
+  margin-right: 25px; 
+  margin-bottom: 30px; 
+  width: 200px;
+
+  /* --- НОВОЕ: ДОБАВЛЯЕМ РАМКУ ВОКРУГ БЛОКА --- */
+  border: 2px solid #444; /* Тёмно-серая рамка вокруг всего блока */
+  border-radius: 8px; /* Скругляем углы рамки */
+  padding: 15px; /* Внутренний отступ, чтобы рамка не прилипала к тексту */
+}
+/* Контейнер для всех схем одного аккорда.
+   display: block заставляет каждый .chord-card занимать свою строку. */
+   .diagrams-container {
+    display: block; /* Каждый аккорд на новой строке */
+}
+
+
+/* Строка одной схемы (например, "x-3-2-0-1-0") */
+.diagram-string {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    color: black; /* Цвет аккорда в блоке - чёрным */
+    
+    /* Увеличиваем ширину, чтобы схемы были шире */
+    width: 200px; /* Было 65px, стало 90px */
+    
+    padding: 4px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    
+    text-align: center;
+}
+
+/* лады */
+.fret, .fret-x {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  width: 30px; /* Размер бокса */
+  height: 30px;
+  
+  font-size: 16px;
+  font-weight: bold;
+  
+  border: 2px solid #444; /* Темная обводка бокса */
+}
+
+.fret {
+  color: #333; /* Цвет для цифр и дефисов */
+}
+
+.fret-x {
+  color: #d62728; /* Красный цвет для 'x' */
+}
+
+/* src/index.css */
+
+/* ... (другие стили остаются без изменений) ... */
