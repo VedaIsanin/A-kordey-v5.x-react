@@ -1,118 +1,320 @@
-/* --- Стили для блока с аккордами (по 4 в ряд) --- */
-.output-display {
-  border: 1px solid #ccc; /* Рамка вокруг всего блока */
-  border-radius: 8px;
-  padding: 2rem;
+/* --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ТЁМНОЙ ТЕМЫ --- */
+:root {
+  /* Цвета */
+  --color-bg-primary: #0d0d0d;      /* Очень темно-серый фон */
+  --color-bg-secondary: #1a1a1a;     /* Фон карточек/панелей */
+  --color-text-primary: #e0e0e0;     /* Основной текст */
+  --color-text-muted: #b0b0b0;       /* Вторичный/серый текст */
+  --color-accent-blue: #4ec9b0;      /* Кнопки при наведении / Акценты */
+  --color-accent-purple: #8f50ff;
+  --color-accent-green: #68d76c;
+  --color-border: #333;              /* Цвет тонких рамок */
+  --color-card-border: rgba(255, 255, 255, 0.1); /* Рамка схем аккордов */
+
+  /* Типографика */
+  --font-family-base: 'Courier New', Courier, monospace;
+  --font-size-base: 1rem;           /* 16px */
+  --font-size-sm: 0.875rem;         /* 14px */
+  --font-size-lg: 1.25rem;          /* 20px */
+  --font-weight-semibold: 600;
+
+  /* Отступы (Spacing) */
+  --gap-md: 1.5rem;                 /* Основной отступ между блоками */
+  --gap-sm: 0.75rem;                /* Маленький отступ */
 }
 
-/* Создаем сетку из 4 колонок с отступами между элементами */
+/* --- ОСНОВНЫЕ СТИЛИ СТРАНИЦЫ (Тело приложения) --- */
+body {
+  font-family: var(--font-family-base);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  margin: 0;
+  padding: 2rem;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-family-base);
+  color: var(--color-text-primary);
+  margin-top: 0;
+}
+
+h1 { font-size: var(--font-size-lg); }
+h2 { font-size: calc(var(--font-size-lg) + 0.25rem); font-weight: var(--font-weight-semibold); }
+h3 { font-size: var(--font-size-base); font-weight: var(--font-weight-semibold); }
+
+
+/* --- ЕДИНООБРАЗИЕ ДЛЯ КНОПОК --- */
+button,
+.select-all-btn,
+.deselect-all-btn,
+.ready-btn {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-secondary);
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: inset 0 -2px 0 rgba(255, 255, 255, 0.1);
+  min-width: fit-content;
+  padding: 0.75rem 1.5rem;
+}
+
+button:hover,
+.select-all-btn:hover,
+.deselect-all-btn:hover,
+.ready-btn:hover {
+  background-color: var(--color-accent-blue);
+  color: #111;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(78, 201, 176, 0.4);
+}
+
+button.active,
+.select-all-btn.active,
+.deselect-all-btn.active,
+.ready-btn.active {
+  background-color: #0055aa;
+  transform: translateY(2px);
+  box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* --- СТИЛИ ТАБЛИЦЫ ТОНАЛЬНОСТЕЙ --- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  word-break: keep-all;
+  margin-bottom: var(--gap-md);
+}
+
+th, td {
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+th {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+td {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+td:hover {
+  background-color: var(--color-bg-secondary);
+}
+
+/* --- ОФОРМЛЕНИЕ ФИНАЛЬНОГО ЭКРАНА (Аккорды и схемы) --- */
+.output-display {
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background-color: var(--color-bg-secondary);
+  padding: var(--gap-md);
+  min-height: 200px;
+}
+
 .grid-cols-4 {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem; /* Отступы между аккордами */
+  /* ВОЗВРАЩАЕМ СТАРУЮ ЛОГИКУ: ровно 4 колонки */
+  grid-template-columns: repeat(4, 1fr); 
+  
+  gap: var(--gap-sm);
 }
 
 .chord-box {
-  display: inline-block;
-  border: 1px solid #aaa; /* Индивидуальная рамка для каждого аккорда */
-  border-radius: 6px;
-  padding: 1rem;
-  background-color: #f9f9f9;
-  min-width: 80px;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  background-color: var(--color-bg-primary);
   text-align: center;
-  font-size: 1.2rem;
+  font-size: var(--font-size-base);
+  font-weight: bold;
 }
 
-/* --- СТИЛИ ДЛЯ СХЕМ АППЛИКАТУР (ChordCard) - НОВЫЙ ПОДХОД --- */
+/* --- ПОДСВЕТКА АККОРДОВ В ПОСЛЕДОВАТЕЛЬНОСТИ --- */
+.grid-cols-4 .chord-box {
+  /* Базовый стиль */
+  transition: all 0.3s ease; /* Плавный переход для эффектов */
+}
 
-/* 1. Базовый стиль карточки (если еще нет) */
+.grid-cols-4 .chord-box:hover {
+  /* Стили при наведении курсора */
+  background-color: var(--color-accent-blue); /* Ярко-бирюзовая подложка */
+  color: #1e1e1e; /* Темный текст для контраста */
+  transform: translateY(-2px); /* Немного приподнимаем */
+  box-shadow: 0 4px 6px rgba(78, 201, 176, 0.5);
+  
+  /* Увеличиваем тень, так как кнопка "отрывается" от фона */
+  z-index: 10; /* Чтобы эффект был поверх других, если они есть */
+}
+
+/* Стили для схем аппликатур (ChordCard) */
+/* --- ПОДСВЕТКА СХЕМЫ АККОРДА ЦЕЛИКОМ --- */
 .chord-diagram-wrapper {
   display: block;
-  text-align: center; /* Важно! Центрируем инлайн-элементы внутри */
-  background-color: white;
-  border: 3px solid #4a5568;
+  text-align: left; /* Выравнивание по левому краю */
+  background-color: var(--color-bg-secondary);
+  border: 3px solid var(--color-card-border); /* ВОЗВРАЩАЕМ БОРДЕР */
   border-radius: 0.75rem;
-  padding: 16px;
-  margin: 0.5rem;
+  padding: 1rem;
+  margin-bottom: var(--gap-md);
 }
 
-/* 2. НОВОЕ ПРАВИЛО: Центрирование заголовка как блока */
+.chord-diagram-wrapper:hover {
+  /* При наведении на любую часть карточки... */
+  border-color: var(--color-accent-green); /* Зеленая рамка */
+  box-shadow: 0 4px 10px rgba(109, 207, 109, 0.5); /* Мягкая зеленая тень */
+}
+
+/* Важно: Заголовок внутри тоже должен менять цвет вместе с родителем */
+.chord-diagram-wrapper:hover > h4 {
+  color: var(--color-accent-green); /* Цвет названия аккорда */
+}
+
+/* --- ПОДСВЕТКА СТРУНЫ ГРИФА ЦЕЛИКОМ --- */
+.diagram-string-row {
+  display: contents; /* Хитрый трюк: грид игнорирует этот div */
+}
+
+/* Выбираем все ячейки (ладовые порожки), которые являются потомками .diagram-string-row */
+.diagram-string-row .diagram-fret-cell {
+  position: relative;
+  height: 45px;
+  line-height: 45px;
+  transition: background-color 0.3s ease;
+}
+
+/* Когда наводим на конкретную ячейку */
+.diagram-string-row .diagram-fret-cell:hover {
+  background-color: rgba(var(--color-accent-purple-rgb), 0.2); /* Фиолетовая подсветка лада */
+}
+
+/* А это магия: когда наводим на ячейку, подсвечиваем ВСЕ ячейки в этой же строке */
+.diagram-string-row .diagram-fret-cell:hover ~ .diagram-fret-cell,
+.diagram-string-row .diagram-fret-cell:hover ~ .diagram-fret-cell:hover {
+  background-color: rgba(var(--color-accent-purple-rgb), 0.1);
+}
+
 .chord-diagram-wrapper > h4 {
-  margin: 0 auto; /* Центрирует блочный элемент по горизонтали */
-  width: fit-content; /* Чтобы margin:auto сработал */
+  margin: 0 auto;
+  width: fit-content;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
 }
 
-/* 1. Главный контейнер сетки */
+/* --- СТИЛИ ДЛЯ ГРИФА (Chord Diagram) --- */
 .diagram-grid-wrapper {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  /* Увеличиваем ширину ячеек, чтобы цифры влезали */
+  grid-template-columns: repeat(6, minmax(35px, 1fr)); 
   
-  /* РЕШЕНИЕ ПРОБЛЕМЫ 1: Увеличиваем вертикальный отступ между рядами */
-  gap: 8px 4px; /* Меньше зазор по горизонтали для компактности */
-  
-  /* НОВОЕ: Задаем рамку вокруг всей схемы */
-  border: 1px solid rgba(0, 0, 0, 0.1); /* Едва заметная серая рамка */
-  padding: 8px; /* Внутренний отступ от рамки до ячеек */
-  border-radius: 4px; /* Скругленные уголки для красоты */
-  
-  width: 100%;
-  max-width: 220px;
-  margin: 0 auto; /* Центрируем схему внутри карточки */
+  gap: 4px 2px;
+  border: 1px solid var(--color-card-border);
+  padding: 8px;
+  border-radius: 0.5rem;
+  background-color: var(--color-bg-primary);
 }
 
-/* 2. Контейнер для одной струны (опционально, но полезно) */
-.diagram-string-row {
-  /* Эта обертка гарантирует, что все ячейки одной струны связаны */
-  display: contents; /* Хитрый трюк: заставляет грид игнорировать этот div */
-}
-
-/* 3. Ячейка одного лада */
+/* Стиль для одной ячейки (лада) */
 .diagram-fret-cell {
-  /* Каждая ячейка занимает ровно один столбец и одну строку */
-  grid-column: span 1;
-  
-  height: 45px; /* Фиксированная высота для ровности */
-  position: relative;
+  position: relative; /* Важно для позиционирования цифр */
+  height: 45px;
+  line-height: 45px;
   text-align: center;
-  line-height: 45px; /* Простой способ вертикального центрирования */
-  box-sizing: border-box; /* Чтобы padding не ломал размеры */
+  transition: background-color 0.2s ease;
 }
 
-/* Стили для цифр */
+/* Цифры или 'x' по центру ячейки */
 .diagram-fret-cell::before {
   content: attr(data-char);
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: #333;
-  font-size: 1.2rem;
+  color: white;
+  font-size: 1rem;
+  background-color: rgba(255, 255, 255, 0.15); /* Полупрозрачный фон */
+  border-radius: 900px;
+  padding: 2px 6px;
 }
-.diagram-fret-cell span {
-  display: none; /* Если используете ::before, span можно скрыть */
+
+/* --- МАГИЯ ПОДСВЕТКИ СТРУНЫ (РАБОТАЮЩАЯ ВЕРСИЯ) --- */
+
+/* 1. Когда мы наводим курсор НА ЛЮБУЮ ЯЧЕЙКУ... */
+.diagram-grid-wrapper .diagram-fret-cell:hover {
+  /* ...мы подсвечиваем ВСЕ ячейки в той же строке (grid-row). */
+  background-color: rgba(var(--color-accent-purple-rgb), 0.2);
+}
+
+/* 2. При этом саму ячейку под курсором выделяем чуть сильнее */
+.diagram-grid-wrapper .diagram-fret-cell:hover {
+  background-color: rgba(var(--color-accent-purple-rgb), 0.4);
 }
 
 /*
- * АДАПТАЦИЯ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ
- *
- * Медиазапрос 'max-width: 768px' срабатывает,
- * когда ширина экрана становится меньше или равна 768 пикселям.
- * Это стандартная точка перехода для планшетов и телефонов.
- */
- @media screen and (max-width: 992px) {
-  .grid-cols-4 {
-      grid-template-columns: repeat(3, 1fr); /* Для планшетов - 3 колонки */
-  }
+* --- ИСПРАВЛЕНИЕ ЗАДВАИВАНИЯ ---
+* Прячем родной <span>, который создает дубликат символа.
+* Теперь цифра берется только из data-attr через ::before.
+*/
+.diagram-fret-cell span {
+  display: none;
 }
 
-@media screen and (max-width: 768px) {
-  .grid-cols-4 {
-      grid-template-columns: repeat(2, 1fr); /* Для телефонов - 2 колонки */
-  }
+/* --- СТИЛИ ДЛЯ ТАБЛИЦЫ ТОНАЛЬНОСТЕЙ (ОБНОВЛЕНО) --- */
+.tonality-table {
+  border-collapse: collapse; /* Границы схлопываются */
+  width: fit-content; /* Таблица будет шириной в свое содержимое */
+  margin: var(--gap-md); /* Используем глобальный отступ */
+  
+  background-color: var(--color-bg-secondary); /* Фон всей таблицы */
+  color: var(--color-text-primary);
+  border-radius: 0.75rem;
+  overflow-x: auto; /* Прокрутка на маленьких экранах */
 }
 
-@media screen and (max-width: 576px) {
-  .grid-cols-4 {
-      grid-template-columns: 1fr; /* Для очень маленьких экранов - 1 колонка */
-  }
+/* Стиль заголовка */
+.tonality-table thead {
+  background-color: #2d3748; /* Темно-синий фон шапки */
+}
+
+.tonality-table th,
+.tonality-table td {
+  padding: 0.75rem 1.5rem; /* Унифицированные отступы */
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-bottom: 1px solid var(--color-border); /* Тонкая граница снизу */
+}
+
+.tonality-table th {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted); /* Более светлый текст для заголовков */
+  font-weight: var(--font-weight-semibold);
+}
+
+.tonality-table tbody tr:nth-child(even) {
+  background-color: var(--color-bg-primary); /* Чередование строк для читаемости */
+}
+
+/* Подсветка при наведении курсора (только на ячейки с названиями) */
+.tonality-table tbody td:not(:first-child):not(:nth-child(4)):hover {
+background-color: var(--color-accent-blue); /* Акцентный цвет из темы */
+transition: background-color 0.2s ease;
+}
+
+/* Центрируем колонку "Ключевые знаки" */
+.tonality-table tbody tr td:nth-child(4) {
+  text-align: center;
 }

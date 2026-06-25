@@ -1,5 +1,5 @@
 /* eslint-enable react/prop-types */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   allChords,
   chordDiagrams,
@@ -121,13 +121,22 @@ export default function useChordGenerator() {
 
 
   // --- ОБРАБОТКА ВВОДА И СОСТОЯНИЯ ---
+// --- НОВАЯ ФУНКЦИЯ ДЛЯ ОБРАБОТКИ ДЛИНЫ ПОСЛЕДОВАТЕЛЬНОСТИ ---
+const handleLengthChange = (value) => {
+  const num = parseInt(value);
+  // Проверяем, что это число и оно в диапазоне от 3 до 12
+  if (!isNaN(num) && num >= 3 && num <= 12) {
+    setSequenceLength(num);
+  }
+};
+
 
   function handleInput(userInput) {
     console.log(`--- НОВЫЙ ВВОД: '${userInput}' | Текущее состояние: '${state}' ---`);
 
     switch (state) {
       case 'chooseKeyNum':
-        let newKey;
+        let newKey; // Переменная объявляется здесь, чтобы быть доступной во всем блоке
         if (userInput.includes(",")) {
           const [choiceNum, mode] = userInput.split(",");
           const numericChoice = parseInt(choiceNum);
@@ -136,7 +145,6 @@ export default function useChordGenerator() {
           if (!isNaN(numericChoice) && numericChoice >= 1 && numericChoice <= majors.length) {
             newKey = mode === 'maj' ? majors[numericChoice - 1] : minors[numericChoice - 1];
             setKey(newKey);
-            // Инициализируем массив с флагами checked=true для всех аккордов тональности
             setSelectedChords(allChords[newKey].map(chord => ({ chord, checked: true })));
             setState('chooseChords');
             return;
@@ -144,7 +152,7 @@ export default function useChordGenerator() {
         } else if (userInput === '0') { // Случайная тональность
           const randomIdx = Math.floor(Math.random() * keyPairs.length);
           const randomMode = Math.round(Math.random());
-          newKey = keyPairs[randomIdx][randomMode];
+          newKey = keyPairs[randomIdx][randomMode]; // Теперь newKey получает значение
           setKey(newKey);
           setSelectedChords(allChords[newKey].map(chord => ({ chord, checked: true })));
           setState('chooseChords');
@@ -153,25 +161,65 @@ export default function useChordGenerator() {
           const randomIdx = Math.floor(Math.random() * keyPairs.length);
           const randomMode = Math.round(Math.random());
           newKey = keyPairs[randomIdx][randomMode];
-          setKey(newKey);
+
+          // 1. Сначала устанавливаем список аккордов.
+          // Используем колбэк-функцию, чтобы быть уверенными, что мы работаем с актуальным newKey.
           setSelectedChords(allChords[newKey].map(chord => ({ chord, checked: true })));
-          generateSequence();
+
+          // 2. Затем устанавливаем ключ.
+          // setKey не принимает колбэк, поэтому мы просто вызываем его.
+          setKey(newKey);
+
+          // 3. Генерация будет запущена автоматически хуком useEffect,
+          // который мы исправили в предыдущем шаге.
         }
         break;
 
-      case 'chooseChords':
-        if (userInput === 'generate') {
-          generateSequence();
-        } else {
+        case 'chooseChords':
+          // Проверяем, является ли ввод числом
           const num = parseInt(userInput);
-          if (!isNaN(num) && num >= 3) {
-            setSequenceLength(num);
-          }
+          if (!isNaN(num)) {
+            // Если это число, проверяем границы [3, 12]
+            if (num >= 3 && num <= 12) {
+              setSequenceLength(num); // Обновляем длину последовательности
+            }
+            // Если число вне границ или поле пустое после удаления, ничего не делаем.
+            // Это позволяет стирать цифры клавишей Backspace.
+          } else if (userInput === 'generate') {
+            // Проверяем количество выбранных аккордов перед генерацией
+            const checkedCount = selectedChords.filter(item => item.checked).length;
+            
+            if (checkedCount >= 3) {
+                generateSequence();
+            } else {
+                console.warn("Ошибка генерации: Необходимо выбрать минимум 3 аккорда.");
+            }
+        } else {
+            const num = parseInt(userInput);
+            if (!isNaN(num)) {
+                // Используем Math.min и Math.max для ограничения диапазона [3, 12]
+                const clampedValue = Math.min(Math.max(num, 3), 12); 
+                setSequenceLength(clampedValue);
+            }
+            // Если поле пустое ("") или введено не число, ничего не делаем,
+            // позволяя пользователю стереть текущее значение.
         }
-        break;
+          break;
 
-      case 'askRepeat':
-        // Логика повтора...
+        case 'askRepeat': // <-- ИЗМЕНЯЕМ ЭТОТ БЛОК
+        if (userInput === '1') {
+          // Регенерация в той же тональности
+          regenerateSequence();
+        } else if (userInput === '2') {
+          // Возврат к выбору аккордов: СБРОСИМ результат генерации
+          setSequence([]);
+          setState('chooseChords');
+        } else if (userInput === '3') {
+          // Возврат к выбору тональности: СБРОСИМ и результат, и ключ
+          setSequence([]);
+          setKey('');
+          setState('chooseKeyNum');
+        }
         break;
 
       default:
@@ -207,6 +255,16 @@ const deselectAll = () => {
     setSelectedChords(prev => prev.map(item => ({ ...item, checked: false })));
 };
 
+useEffect(() => {
+  // Этот эффект сработает, когда key и selectedChords будут готовы.
+  // Он проверяет, что мы находимся на шаге выбора тональности,
+  // чтобы избежать зацикливания на других шагах.
+  if (state === 'chooseKeyNum' && key && selectedChords.length > 0) {
+    console.log("Состояния key и selectedChords установлены. Запускаем генерацию.");
+    generateSequence();
+  }
+}, [state, key, selectedChords, generateSequence]); // Добавили state в зависимости
+
 
 
 
@@ -217,8 +275,8 @@ return {
     sequence,
     sequenceLength,
     forbidVtoIV,
+    handleLengthChange,
     handleInput,
-    handleCheckChange,
     selectAll,
     deselectAll,
     regenerateSequence,

@@ -3,45 +3,49 @@
 
 import React from 'react';
 import { useState } from 'react';
-import { keyPairs, keySignatures } from '../data/vocabulary'; // Импортируем keySignatures
+import { keyPairs, keySignatures } from '../data/vocabulary';
 
-function TonalitySelector({ onSelect, keyPairs, keySignatures }) { // Добавляем keySignatures в пропсы
+function TonalitySelector({ onSelect }) { // Пропсы keyPairs и keySignatures можно убрать, если они импортируются здесь
+   // Если вы используете Tailwind CSS или переменные дизайна:
+   const gap = '1rem'; // Замените на ваше значение отступа (например, '16px')
+   const borderWidth = '1px';
+   const borderColor = '#e2e8f0'; // Цвет границы строк
+
    return (
      <div>
        <h2 className="text-xl font-semibold mb-4">Шаг 1. Выберите тональность</h2>
-       <table className="min-w-full divide-y divide-gray-700">
-         <thead className="bg-gray-800">
+       
+       <table
+         className="tonality-table"
+         style={{
+             '--gap': gap,
+             '--border-width': borderWidth,
+             '--border-color': borderColor,
+         }}
+       >
+         <thead>
            <tr>
-             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">№</th>
-             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Мажор (M)</th>
-             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Минор (m)</th>
-             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Ключевые знаки</th>
+             <th scope="col" className="whitespace-nowrap">№</th>
+             <th scope="col" className="whitespace-nowrap">Мажор (M)</th>
+             <th scope="col" className="whitespace-nowrap">Минор (m)</th>
+             <th scope="col" className="whitespace-nowrap text-center">Ключевые знаки</th>
            </tr>
          </thead>
-         <tbody className="bg-gray-700 divide-y divide-gray-800">
+         <tbody>
            {keyPairs.map(([major, minor], index) => (
              <tr key={index}>
-               <td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
-               
-               {/* Ячейка Мажор - КНОПКА */}
-               <td
-                 className="px-6 py-4 whitespace-nowrap cursor-pointer transition-colors hover:bg-gray-800"
-                 onClick={() => onSelect(`${index+1},maj`)}
-               >
+               <td className="whitespace-nowrap">{index + 1}</td>
+               {/* Ячейка Мажор */}
+               <td className="whitespace-nowrap" onClick={() => onSelect(`${index+1},maj`)}>
                  {major}
                </td>
-               
-               {/* Ячейка Минор - КНОПКА */}
-               <td
-                 className="px-6 py-4 whitespace-nowrap cursor-pointer transition-colors hover:bg-red-800"
-                 onClick={() => onSelect(`${index+1},min`)}
-               >
+               {/* Ячейка Минор */}
+               <td className="whitespace-nowrap" onClick={() => onSelect(`${index+1},min`)}>
                  {minor}
                </td>
-               
                {/* Ячейка с ключевыми знаками */}
-               <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-bold">
-                {keySignatures[major]} {/* Используем пропс */}
+               <td className="whitespace-nowrap text-center">
+                {keySignatures[major]}
               </td>
              </tr>
            ))}

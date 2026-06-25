@@ -18,6 +18,7 @@ function App() {
     sequenceLength,
     handleInput,
     regenerateSequence,
+    handleLengthChange,
     handleCheckChange,
     selectAll,
     deselectAll,
@@ -45,32 +46,36 @@ function App() {
   }
 
   // Экран 1: Выбор тональности из таблицы
-  if (state === 'chooseKeyNum') {
+  else if (state === 'chooseKeyNum') {
     return (
-      <div className="min-h-screen bg-gray-900 text-white p-8 space-y-8">
-        <h1 className="text-3xl font-bold mb-4 text-center">Генератор аккордов</h1>
-        <div className="flex flex-col sm:flex-row justify-center gap-3 mb-8">
-          <button
-            onClick={() => handleInput('0')}
-            className="w-full sm:w-auto bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded"
-          >
-            🎲 Случайная тональность
-          </button>
-          <button
-            onClick={() => handleInput('00')}
-            className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded"
-          >
-            ⚡️ Быстрая генерация
-          </button>
+        <div className="min-h-screen bg-gray-900 text-white p-8 space-y-8">
+            <h1 className="text-3xl font-bold mb-4 text-center">Генератор аккордов</h1>
+
+            {/* Таблица теперь идет первой */}
+            <TonalitySelector
+                onSelect={handleInput}
+                keyPairs={keyPairs}
+                keySignatures={keySignatures}
+            />
+
+            {/* Блок с кнопками перемещен сюда, под таблицу */}
+            <div className="flex flex-col sm:flex-row justify-center gap-3 mt-8">
+                <button
+                    onClick={() => handleInput('0')}
+                    className="w-full sm:w-auto bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded"
+                >
+                    🎲 Случайная тональность
+                </button>
+                <button
+                    onClick={() => handleInput('00')}
+                    className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded"
+                >
+                    ⚡️ Быстрая генерация
+                </button>
+            </div>
         </div>
-        <TonalitySelector
-          onSelect={handleInput}
-          keyPairs={keyPairs}
-          keySignatures={keySignatures}
-        />
-      </div>
     );
-  }
+}
 
   // Экран 2: Выбор аккордов
   else if (state === 'chooseChords') {
@@ -130,13 +135,34 @@ function App() {
         </div>
 
         {/* Блок с выбором длины последовательности */}
+        {/* Блок с выбором длины последовательности */}
         <div>
-          <p className="mb-2 sm:mb-0 text-lg">Длина последовательности:</p>
+          <p className="mb-2 sm:mb-0 text-lg">Длина последовательности (3-12):</p>
+          
+          {/* --- ИСПРАВЛЕННЫЙ ИНПУТ --- */}
           <input
             type="number"
-            min="3"
-            value={sequenceLength}
-            onChange={(e) => handleInput(e.target.value)}
+            min="3" // HTML-валидация
+            max="12"
+            
+            // Используем значение из состояния хука как дефолтное
+            defaultValue={sequenceLength} 
+            
+            onChange={(e) => {
+              const value = e.target.value;
+              
+              // Если поле пустое или "0", просто позволяем ввести новое число
+              if (value === "" || value === "0") {
+                return; // Ничего не делаем со статусом, просто ждем нового ввода
+              }
+
+              const num = parseInt(value);
+              // Проверяем границы только если это валидное число от 3 до 12
+              if (!isNaN(num) && num >= 3 && num <= 12) {
+                // Вызываем handleInput с числом, чтобы обновить глобальное состояние
+                handleInput(num.toString());
+              }
+            }}
             className="w-full sm:w-auto bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded"
           />
         </div>
@@ -179,12 +205,29 @@ function App() {
           <OutputDisplay sequence={sequence} />
           {/* НОВАЯ КНОПКА ДЛЯ ПОВТОРНОЙ ГЕНЕРАЦИИ */}
           <div className="mt-8 text-center md:text-left">
-              <button
-                onClick={regenerateSequence} // <-- ВЫЗЫВАЕМ НОВУЮ ФУНКЦИЮ
-                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md"
-              >
-                🔄 Сгенерировать заново в той же тональности
-              </button>
+            {/* Кнопка 1: Сгенерировать заново */}
+<button
+              onClick={regenerateSequence}
+              className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md"
+            >
+              🔄 Сгенерировать заново
+            </button>
+
+            {/* Кнопка 2: Выбрать другие аккорды - ПЕРЕДЕЛАНА -->*/}
+            <button
+              onClick={() => handleInput('2')} // <-- ИЗМЕНЕНО на '2'
+              className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg shadow-md"
+            >
+              🎹 Выбрать другие аккорды
+            </button>
+
+            {/* Кнопка 3: Выбрать другую тональность - ПЕРЕДЕЛАНА */}
+            <button
+              onClick={() => handleInput('3')} // <-- ИЗМЕНЕНО на '3'
+              className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg shadow-md"
+            >
+              🎼 Выбрать другую тональность
+            </button>
             </div>
         </div>
       </div>
